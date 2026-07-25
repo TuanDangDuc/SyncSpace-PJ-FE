@@ -1,0 +1,1 @@
+import{l as a}from"./index-DLkZMSj9.js";const c={create:o=>a.post("/api/booking",o).then(e=>e.data),getMyBookings:(o,{page:e=0,size:g=6,status:i="",sort:n=""}={})=>{const t={page:e,size:g};return i&&(t.paymentStatus=i),n&&(t.sort=n),a.get(`/api/booking/get-history-booking/${o}`,{params:t}).then(p=>p.data)},cancel:o=>a.delete(`/api/booking/${o}/cancel`)};export{c as b};

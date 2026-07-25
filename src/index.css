@@ -1,0 +1,165 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+  body {
+    background-color: #FAF9F6;
+    color: #1C1917;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'cv11', 'ss01';
+    line-height: 1.6;
+  }
+
+  ::-webkit-scrollbar       { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #D9D0C5; border-radius: 9999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #BAB0A3; }
+
+  ::selection { background-color: #fae7da; color: #8a4a2f; }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+
+  a { color: inherit; text-decoration: none; }
+}
+
+@layer components {
+
+  .page-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Warm surface card */
+  .card {
+    @apply bg-white rounded-lg border border-gray-150;
+    box-shadow: 0 1px 3px rgba(28,25,23,0.06), 0 0 0 1px rgba(28,25,23,0.04);
+  }
+
+  .card-hover {
+    @apply hover:-translate-y-0.5 transition-all duration-200;
+    &:hover {
+      box-shadow: 0 6px 20px rgba(28,25,23,0.10), 0 0 0 1px rgba(28,25,23,0.06);
+    }
+  }
+
+  /* Serif display text */
+  .display-text {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+
+  /* Terracotta accent text */
+  .accent-text {
+    color: #C2714F;
+  }
+
+  /* Italic serif highlight */
+  .serif-italic {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+  }
+
+  /* Warm divider */
+  .divider {
+    @apply border-t border-gray-150;
+  }
+
+  /* Status indicator dots */
+  .status-available {
+    background-color: #4A7C59;
+    animation: status-pulse 2.5s ease-in-out infinite;
+  }
+
+  .status-occupied {
+    background-color: #C0392B;
+  }
+
+  .status-maintenance {
+    background-color: #B45309;
+  }
+
+  /* Grain texture overlay */
+  .grain-overlay {
+    position: relative;
+  }
+  .grain-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Shimmer loading effect — warm toned */
+  .shimmer {
+    background: linear-gradient(90deg, #EDE8E0 25%, #E8E3DC 50%, #EDE8E0 75%);
+    background-size: 600px 100%;
+    animation: shimmer 1.8s ease-in-out infinite;
+  }
+
+  /* Tag / label chips */
+  .tag {
+    @apply inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium;
+    background-color: #F5F1EB;
+    color: #57534E;
+    border: 1px solid #E8E3DC;
+  }
+
+  /* Section label */
+  .section-label {
+    @apply text-xs font-semibold uppercase tracking-widest;
+    color: #9C9186;
+    letter-spacing: 0.12em;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .font-display { font-family: 'Playfair Display', Georgia, serif; }
+}
+
+@keyframes status-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 124, 89, 0.35); }
+  50%       { box-shadow: 0 0 0 5px rgba(74, 124, 89, 0); }
+}
+
+@keyframes shimmer {
+  from { background-position: -600px 0; }
+  to   { background-position:  600px 0; }
+}
+
+/* ── Toast progress bar countdown ─────────────────────────────────────── */
+@keyframes toast-progress {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
+
+/* Thêm thanh progress vào mọi toast */
+div[class*="go"] > div {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Target the react-hot-toast container to add progress bar via ::after */
+.toast-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2.5px;
+  width: 100%;
+  transform-origin: left;
+  border-radius: 0 0 10px 10px;
+  animation: toast-progress 4s linear forwards;
+}

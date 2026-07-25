@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git(branch: 'main', url: 'https://github.com/TuanDangDuc/SyncSpace-FE.git')
+        git(branch: 'main', url: 'https://github.com/TuanDangDuc/SyncSpace-PJ-FE.git')
       }
     }
 

@@ -27,14 +27,16 @@ pipeline {
 
       }
     }
+
     stage('trigger deploy') {
       steps {
         script {
-          build job: 'Deploy', wait: false
+          build job: 'DeploySyncSpace', wait: false
         }
 
       }
     }
+
   }
   post {
     success {

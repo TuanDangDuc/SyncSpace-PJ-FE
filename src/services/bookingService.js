@@ -11,6 +11,16 @@ const bookingService = {
     api.post('/api/booking', payload).then((r) => r.data),
 
   /**
+   * GET /api/booking?page={page}&size={size}
+   */
+  getAllBookings: ({ page = 0, size = 8, status = '', sort = '' } = {}) => {
+    const params = { page, size }
+    if (status) params.paymentStatus = status
+    if (sort) params.sort = sort
+    return api.get('/api/booking', { params }).then((r) => r.data)
+  },
+
+  /**
    * GET /api/booking/get-history-booking/{userId}?page={page}&size={size}
    * Response: Page<BookingEntity>
    * BookingEntity: { id, createAt, paymentStatus, totalCost, bookingSlots }
@@ -25,11 +35,11 @@ const bookingService = {
   },
 
   /**
-   * DELETE /api/booking/{id}/cancel
+   * DELETE /api/booking/{id}/cancel?userId={userId}
    * Response: 204 No Content
    */
-  cancel: (id) =>
-    api.delete(`/api/booking/${id}/cancel`),
+  cancel: (id, userId) =>
+    api.delete(`/api/booking/${id}/cancel`, { params: { userId } }),
 }
 
 export default bookingService

@@ -29,12 +29,12 @@ function fmtMoney(n) { return n != null ? `${Number(n).toLocaleString('vi-VN')}�
 const PLACEHOLDER = 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&q=80'
 
 /* ── Cancel Confirmation Modal ──────────────────────────────────────────── */
-function CancelModal({ bookingId, open, onClose, onSuccess }) {
+function CancelModal({ bookingId, open, onClose, onSuccess, userId }) {
   const [loading, setLoading] = useState(false)
   const handle = async () => {
     setLoading(true)
     try {
-      await bookingService.cancel(bookingId)
+      await bookingService.cancel(bookingId, userId)
       showToast.success('Đã huỷ đặt phòng thành công')
       onSuccess()
       onClose()
@@ -60,14 +60,13 @@ function CancelModal({ bookingId, open, onClose, onSuccess }) {
 
 /* ── Single Slot Row ────────────────────────────────────────────────────── */
 function SlotRow({ slot }) {
-  const ws = slot.workSpaceEntity
   return (
     <div className="flex flex-col md:flex-row gap-5 p-5 rounded-2xl border border-gray-150 bg-stone-50/50 hover:bg-stone-50 transition-colors mb-4 last:mb-0">
       {/* Left: Thumbnail */}
       <div className="w-full md:w-36 h-24 rounded-xl overflow-hidden shrink-0 bg-gray-100 border border-gray-200">
         <img loading="lazy"
-          src={ws?.thumbnailUrl || PLACEHOLDER}
-          alt={ws?.roomNumber}
+          src={slot.thumbnailUrl || PLACEHOLDER}
+          alt={slot.roomNumber}
           className="w-full h-full object-cover"
           onError={(e) => { e.target.src = PLACEHOLDER }}
         />
@@ -78,31 +77,31 @@ function SlotRow({ slot }) {
         <div>
           <div className="flex items-center gap-2.5 mb-1.5">
             <span className="font-display font-bold text-gray-900 text-lg">
-              Phòng {ws?.roomNumber ?? '—'}
+              Phòng {slot.roomNumber ?? '—'}
             </span>
             <Badge variant={slotVariant[slot.bookingStatus] || 'default'} size="md">
               {BOOKING_STATUS_LABEL?.[slot.bookingStatus] ?? slot.bookingStatus}
             </Badge>
           </div>
           <p className="text-sm text-stone-500 font-medium mb-2.5">
-            {WORKSPACE_TYPE_LABEL?.[ws?.type] ?? ws?.type}
+            {WORKSPACE_TYPE_LABEL?.[slot.workspaceType] ?? slot.workspaceType}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-stone-400">
           <span className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-md border border-stone-150">
-            <Layers size={12} className="text-stone-400" /> Tầng {ws?.floor ?? '—'}
+            <Layers size={12} className="text-stone-400" /> Tầng {slot.floor ?? '—'}
           </span>
           <span className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-md border border-stone-150">
-            <Users size={12} className="text-stone-400" /> {ws?.capacity ?? '—'} chỗ
+            <Users size={12} className="text-stone-400" /> {slot.capacity ?? '—'} chỗ
           </span>
-          {ws?.acreage && (
+          {slot.acreage && (
             <span className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-md border border-stone-150">
-              {ws.acreage} m²
+              {slot.acreage} m²
             </span>
           )}
-          {ws?.pricePerHour && (
+          {slot.pricePerHour && (
             <span className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-md border border-stone-150">
-              <DollarSign size={12} className="text-stone-400" />{fmtMoney(ws.pricePerHour)}/h
+              <DollarSign size={12} className="text-stone-400" />{fmtMoney(slot.pricePerHour)}/h
             </span>
           )}
         </div>
@@ -356,6 +355,7 @@ export default function MyBookingsPage() {
         open={!!cancelId}
         onClose={() => setCancelId(null)}
         onSuccess={fetchBookings}
+        userId={user?.id}
       />
     </div>
   )

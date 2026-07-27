@@ -33,10 +33,12 @@ function BookingDetailModal({ booking, open, onClose, onPaymentChange }) {
         {/* Meta grid */}
         <div className="grid grid-cols-2 gap-2.5">
           {[
-            { label: 'Booking ID',     value: booking.id?.slice(0, 12) + '…' },
-            { label: 'Created',        value: fmt(booking.createAt) },
-            { label: 'Total cost',     value: `${booking.totalCost?.toLocaleString('vi-VN')}₫` },
-            { label: 'Payment',        value: PAYMENT_STATUS_LABEL[booking.paymentStatus] },
+            { label: 'Booking ID',  value: booking.id?.slice(0, 12) + '…' },
+            { label: 'Created',     value: fmt(booking.createAt) },
+            { label: 'Total cost',  value: `${booking.totalCost?.toLocaleString('vi-VN')}₫` },
+            { label: 'Payment',     value: PAYMENT_STATUS_LABEL[booking.paymentStatus] },
+            { label: 'User email',  value: booking.userEmail ?? '—' },
+            { label: 'User ID',     value: booking.userId?.slice(0, 8) + '…' },
           ].map((item) => (
             <div key={item.label} className="p-3 rounded-xl bg-gray-50 border border-gray-100">
               <p className="text-[11px] text-gray-500 mb-1">{item.label}</p>
@@ -53,7 +55,7 @@ function BookingDetailModal({ booking, open, onClose, onPaymentChange }) {
               {booking.bookingSlots.map((s) => (
                 <div key={s.id} className="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-100 text-xs">
                   <div>
-                    <p className="font-medium text-gray-900">Room {s.workspace?.roomNumber ?? '—'}</p>
+                    <p className="font-medium text-gray-900">Room {s.roomNumber ?? '—'}</p>
                     <p className="text-gray-500 mt-0.5">{fmt(s.startTime)} → {fmt(s.endTime)}</p>
                   </div>
                   <div className="text-right">
@@ -72,13 +74,15 @@ function BookingDetailModal({ booking, open, onClose, onPaymentChange }) {
         <div className="border-t border-gray-100 pt-4">
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Update payment</p>
           <div className="flex gap-2 flex-wrap">
-            {[PAYMENT_STATUS.PAID, PAYMENT_STATUS.CANCELLED, PAYMENT_STATUS.REFUNDED].map((s) => (
-              <Button key={s} size="sm" loading={loading}
-                variant={s === PAYMENT_STATUS.PAID ? 'success' : s === PAYMENT_STATUS.CANCELLED ? 'danger' : 'secondary'}
-                disabled={booking.paymentStatus === s}
-                onClick={handlePayment}>
-                {PAYMENT_STATUS_LABEL[s]}
-              </Button>
+            {[PAYMENT_STATUS.PAID, PAYMENT_STATUS.CANCELLED, PAYMENT_STATUS.FAILED].map((s) => (
+              <span key={s}>
+                <Button size="sm" loading={loading}
+                  variant={s === PAYMENT_STATUS.PAID ? 'success' : s === PAYMENT_STATUS.CANCELLED ? 'danger' : 'secondary'}
+                  disabled={booking.paymentStatus === s}
+                  onClick={handlePayment}>
+                  {PAYMENT_STATUS_LABEL[s]}
+                </Button>
+              </span>
             ))}
           </div>
         </div>
@@ -185,7 +189,7 @@ export default function AdminBookingsPage() {
                   : bookings.map((b) => (
                     <tr key={b.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-5 py-3.5 font-mono text-[11px] text-gray-400">#{b.id?.slice(0,8).toUpperCase()}</td>
-                      <td className="px-5 py-3.5 text-sm text-gray-700">{b.user?.username ?? b.userId?.slice(0,8) ?? '—'}</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-700">{b.userEmail ?? b.userId?.slice(0,8) ?? '—'}</td>
                       <td className="px-5 py-3.5 text-sm text-gray-500">{b.bookingSlots?.length ?? 0}</td>
                       <td className="px-5 py-3.5 text-xs text-gray-500 whitespace-nowrap">{fmt(b.createAt)}</td>
                       <td className="px-5 py-3.5 text-sm font-medium text-gray-900 whitespace-nowrap">{b.totalCost?.toLocaleString('vi-VN')}₫</td>
